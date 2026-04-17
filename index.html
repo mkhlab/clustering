@@ -237,7 +237,7 @@ function setHierPhaseUI(phase,mergeIdx){
     const m=hMerges[mergeIdx-1],min=m.allDists.find(d=>d.isMin);
     pl.className='phase-label phase-merge'; pl.textContent='② クラスタを結合';
     infoEl.className='info-box info-merge';
-    infoEl.innerHTML=`${min.la} と ${min.lb} を結合（距離 ${m.d.toFixed(1)}）。残り ${hClusters.length} クラスタ。`;
+    infoEl.innerHTML=`${min.la} と ${min.lb} を結合（距離 ${m.d.toFixed(1)}）。<br>残り ${hClusters.length} クラスタ。`;
   } else if(phase==='done'){
     pl.className='phase-label phase-merge'; pl.textContent='完了';
     infoEl.className='info-box info-merge';
