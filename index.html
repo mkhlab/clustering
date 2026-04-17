@@ -26,15 +26,18 @@ select { padding: 5px 10px; border-radius: 8px; border: 1px solid #ccc; font-siz
 .phase-label { font-size: 14px; font-weight: 600; padding: 2px 8px; border-radius: 8px; display: inline-block; margin-bottom: 6px; }
 .phase-measure { background: #fff8e1; color: #8a6000; }
 .phase-merge   { background: #e8f5e9; color: #1b5e20; }
-.main-layout { display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap; }
-.canvases { display: flex; gap: 12px; flex-wrap: wrap; flex: 1; min-width: 300px; }
+.main-layout { display: flex; flex-direction: column; gap: 12px; }
+.canvases { display: flex; gap: 12px; flex-wrap: nowrap; flex: 0 0 auto; }
 .canvas-wrap { flex: 1; min-width: 200px; }
 .canvas-label { font-size: 15px; color: #888; margin-bottom: 4px; }
-.dist-panel { min-width: 170px; flex: 0 0 170px; }
-.dist-panel-label { font-size: 15px; color: #888; margin-bottom: 4px; }
+. { width: 170px; flex: 0 0 170px; overflow: hidden; }
+.-label { font-size: 15px; color: #888; margin-bottom: 4px; }
 .dist-table { width: 100%; border-collapse: collapse; font-size: 15px; }
 .dist-table th { font-size: 14px; font-weight: 500; color: #888; text-align: left; padding: 3px 6px; border-bottom: 1px solid #eee; }
-.dist-table td { padding: 4px 6px; border-bottom: 1px solid #eee; color: #222; }
+.dist-table td { padding: 4px 6px; border-bottom: 1px solid #eee; color: #222; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dist-table td:nth-child(1) { max-width: 55px; }
+.dist-table td:nth-child(2) { max-width: 55px; }
+.dist-table td:nth-child(3) { max-width: none; }
 .dist-table tr.min-row td { background: #fdecea; color: #b71c1c; font-weight: 500; }
 .dist-table-wrap { border: 1px solid #eee; border-radius: 8px; overflow: hidden; background: #fff; }
 .note { font-size: 14px; color: #bbb; margin-top: 8px; }
@@ -74,8 +77,8 @@ select { padding: 5px 10px; border-radius: 8px; border: 1px solid #ccc; font-siz
         <canvas id="dendCanvas" width="400" height="400"></canvas>
       </div>
     </div>
-    <div class="dist-panel">
-      <div class="dist-panel-label">クラスタ間距離</div>
+    <div class="">
+      <div class="-label">クラスタ間距離</div>
       <div class="dist-table-wrap">
         <table class="dist-table">
           <thead><tr><th>A</th><th>B</th><th>距離</th></tr></thead>
@@ -122,12 +125,12 @@ let hPts=[], hClusters=[], hMerges=[], hMergeIdx=0, hPhase='init', hAutoTimer=nu
 
 function initHier(){
   hPts=[
-    {x:60,y:80},{x:90,y:60},{x:75,y:110},
-    {x:200,y:70},{x:230,y:90},{x:215,y:50},
-    {x:140,y:200},{x:160,y:230},{x:120,y:220},
-    {x:280,y:180},{x:260,y:210}
-  ];
-  resetHier();
+  {x:80,y:100},{x:120,y:75},{x:100,y:140},
+  {x:260,y:90},{x:300,y:115},{x:280,y:65},
+  {x:180,y:260},{x:210,y:300},{x:155,y:285},
+  {x:360,y:230},{x:335,y:270}
+];
+resetHier();
 }
 
 function clusterLabel(cl){ return '{'+cl.map(i=>i+1).join(',')+'}';}
@@ -385,11 +388,11 @@ let kmPts=[], kmAssign=[], kmCentroids=[], kmStep=0, kmPhase='init', kmAutoT=nul
 
 function initKmeans(){
   kmPts=[
-    {x:80,y:70},{x:110,y:55},{x:95,y:100},{x:70,y:50},{x:120,y:85},
-    {x:220,y:65},{x:250,y:85},{x:235,y:50},{x:200,y:95},{x:265,y:65},
-    {x:150,y:190},{x:170,y:220},{x:130,y:210},{x:160,y:185},{x:185,y:210},
-    {x:290,y:170},{x:270,y:195},{x:310,y:200},{x:285,y:220},{x:320,y:175}
-  ];
+  {x:90,y:90},{x:140,y:70},{x:120,y:130},{x:80,y:65},{x:155,y:110},
+  {x:290,y:85},{x:330,y:110},{x:310,y:65},{x:265,y:125},{x:350,y:85},
+  {x:195,y:250},{x:225,y:290},{x:165,y:275},{x:210,y:240},{x:245,y:275},
+  {x:380,y:225},{x:355,y:258},{x:410,y:265},{x:375,y:295},{x:425,y:230}
+];
   resetKmeans();
 }
 
