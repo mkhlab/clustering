@@ -6,53 +6,77 @@
 <title>クラスタリング教材</title>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: sans-serif; color: #222; background: #fff; padding: 1.5rem; margin: 0 auto;font-size: 18px; }
-h1 { font-size: 18px; font-weight: 500; margin-bottom: 1rem; }
+body { font-family: sans-serif; color: #222; background: #fff; padding: 1rem; font-size: 16px; }
+
 .tabs { display: flex; gap: 6px; padding: 0 0 0.75rem; flex-wrap: wrap; }
-.tab { padding: 6px 14px; border-radius: 8px; border: 1px solid #ccc; font-size: 18px; cursor: pointer; background: transparent; color: #555; }
+.tab { padding: 6px 14px; border-radius: 8px; border: 1px solid #ccc; font-size: 16px; cursor: pointer; background: transparent; color: #555; }
 .tab.active { background: #f0f0f0; color: #111; font-weight: 500; border-color: #999; }
 .panel { display: none; } .panel.active { display: block; }
-canvas { border: 1px solid #ddd; border-radius: 8px; background: #fff; display: block; }
-.controls { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 0.75rem 0; }
-.btn { padding: 6px 14px; border-radius: 8px; border: 1px solid #ccc; font-size: 18px; cursor: pointer; background: transparent; color: #222; }
+
+canvas { border: 1px solid #ddd; border-radius: 8px; background: #fff; display: block; width: 100%; height: auto; }
+
+.controls { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 0.75rem 0; }
+.btn { padding: 6px 14px; border-radius: 8px; border: 1px solid #ccc; font-size: 16px; cursor: pointer; background: transparent; color: #222; white-space: nowrap; }
 .btn:hover { background: #f5f5f5; }
-.btn.primary { background: #e8f0fb; color: #1a5cb0; border-color: #a8c4e8; }
+.btn.primary  { background: #e8f0fb; color: #1a5cb0; border-color: #a8c4e8; }
+.btn.secondary{ background: #f3e8fb; color: #6a1ab0; border-color: #caa8e8; }
+.btn.success  { background: #e8fbee; color: #1a7a3a; border-color: #a8e8bc; }
 .btn:disabled { opacity: 0.4; cursor: default; }
-select { padding: 5px 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 18px; background: #fff; color: #222; cursor: pointer; }
-.info-box { border-radius: 8px; padding: 10px 14px; font-size: 13px; line-height: 1.7; margin: 0.5rem 0; min-height: 3.4em; }.info-neutral { background: #f7f7f7; color: #555; }
+
+select { padding: 5px 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 16px; background: #fff; color: #222; cursor: pointer; }
+
+.info-box { border-radius: 8px; padding: 10px 14px; font-size: 15px; line-height: 1.7; margin: 0.5rem 0; min-height: 3.4em; }
+.info-neutral { background: #f7f7f7; color: #555; }
 .info-measure { background: #fff8e1; color: #8a6000; }
 .info-merge   { background: #e8f5e9; color: #1b5e20; }
-.step-badge { font-size: 15px; color: #888; min-width: 90px; }
-.phase-label { font-size: 14px; font-weight: 600; padding: 2px 8px; border-radius: 8px; display: inline-block; margin-bottom: 6px; }
+
+.step-badge { font-size: 14px; color: #888; white-space: nowrap; }
+.phase-label { font-size: 13px; font-weight: 600; padding: 2px 8px; border-radius: 8px; display: inline-block; margin-bottom: 6px; }
 .phase-measure { background: #fff8e1; color: #8a6000; }
 .phase-merge   { background: #e8f5e9; color: #1b5e20; }
-.main-layout { display: flex; flex-direction: column; gap: 12px; }
-.canvases { display: flex; gap: 12px; flex-wrap: nowrap; flex: 0 0 auto; }
-.canvas-wrap { flex: 1; min-width: 200px; }
-.canvas-label { font-size: 15px; color: #888; margin-bottom: 4px; }
-. { width: 170px; flex: 0 0 170px; overflow: hidden; }
-.-label { font-size: 15px; color: #888; margin-bottom: 4px; }
-.dist-table { width: 100%; border-collapse: collapse; font-size: 15px; }
-.dist-table th { font-size: 14px; font-weight: 500; color: #888; text-align: left; padding: 3px 6px; border-bottom: 1px solid #eee; }
-.dist-table td { padding: 4px 6px; border-bottom: 1px solid #eee; color: #222; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.dist-table td:nth-child(1) { max-width: 55px; }
-.dist-table td:nth-child(2) { max-width: 55px; }
-.dist-table td:nth-child(3) { max-width: none; }
-.dist-table tr.min-row td { background: #fdecea; color: #b71c1c; font-weight: 500; }
+
+.main-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  align-items: start;
+}
+.canvas-label { font-size: 14px; color: #888; margin-bottom: 4px; }
+
+.dist-panel-label { font-size: 14px; color: #888; margin-bottom: 4px; }
 .dist-table-wrap { border: 1px solid #eee; border-radius: 8px; overflow: hidden; background: #fff; }
-.note { font-size: 14px; color: #bbb; margin-top: 8px; }
+.dist-table { width: 100%; border-collapse: collapse; font-size: 14px; table-layout: fixed; }
+.dist-table th { font-size: 13px; font-weight: 500; color: #888; text-align: left; padding: 4px 6px; border-bottom: 1px solid #eee; }
+.dist-table th:nth-child(1) { width: 38%; }
+.dist-table th:nth-child(2) { width: 38%; }
+.dist-table th:nth-child(3) { width: 24%; }
+.dist-table td { padding: 4px 6px; border-bottom: 1px solid #eee; color: #222; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dist-table tr.min-row td { background: #fdecea; color: #b71c1c; font-weight: 500; }
+
+@media (max-width: 640px) {
+  .main-layout { grid-template-columns: 1fr; }
+  body { font-size: 15px; }
+}
+
+.note { font-size: 13px; color: #bbb; margin-top: 8px; }
+.data-controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 0.5rem; }
+.data-label { font-size: 14px; color: #888; }
 </style>
 </head>
 <body>
-<h1>クラスタリング インタラクティブ教材</h1>
 
 <div class="tabs">
   <button class="tab active" onclick="switchTab('hierarchical', this)">階層的クラスタリング</button>
   <button class="tab" onclick="switchTab('kmeans', this)">k-means</button>
 </div>
 
-<!-- ===== 階層的クラスタリング ===== -->
+<!-- 階層的クラスタリング -->
 <div id="panel-hierarchical" class="panel active">
+  <div class="data-controls">
+    <span class="data-label">データ：</span>
+    <button class="btn success"    onclick="loadHierTeaching()">教材用</button>
+    <button class="btn secondary"  onclick="loadHierRandom()">ランダム</button>
+  </div>
   <div class="controls">
     <select id="linkage-method" onchange="resetHier()">
       <option value="single">最近法 (single linkage)</option>
@@ -67,23 +91,21 @@ select { padding: 5px 10px; border-radius: 8px; border: 1px solid #ccc; font-siz
   <div id="hier-phase-label" class="phase-label phase-measure">① 距離を測る</div>
   <div id="hier-info" class="info-box info-neutral">「次へ」で距離の計測から始まります。点はクリックで移動できます。</div>
   <div class="main-layout">
-    <div class="canvases">
-      <div class="canvas-wrap">
-        <div class="canvas-label">散布図</div>
-        <canvas id="hierCanvas" width="400" height="400" onclick="hierClick(event)"></canvas>
-      </div>
-      <div class="canvas-wrap">
-        <div class="canvas-label">デンドログラム</div>
-        <canvas id="dendCanvas" width="400" height="400"></canvas>
-      </div>
+    <div>
+      <div class="canvas-label">散布図</div>
+      <canvas id="hierCanvas" onclick="hierClick(event)"></canvas>
     </div>
-    <div class="">
-      <div class="-label">クラスタ間距離</div>
+    <div>
+      <div class="canvas-label">デンドログラム</div>
+      <canvas id="dendCanvas"></canvas>
+    </div>
+    <div style="grid-column: 1 / -1;">
+      <div class="dist-panel-label">クラスタ間距離</div>
       <div class="dist-table-wrap">
         <table class="dist-table">
-          <thead><tr><th>A</th><th>B</th><th>距離</th></tr></thead>
+          <thead><tr><th>クラスタ A</th><th>クラスタ B</th><th>距離</th></tr></thead>
           <tbody id="dist-tbody">
-            <tr><td colspan="3" style="color:#aaa;padding:8px 6px;font-size:15px;">ステップを進めると<br>表示されます</td></tr>
+            <tr><td colspan="3" style="color:#aaa;padding:8px 6px;">ステップを進めると表示されます</td></tr>
           </tbody>
         </table>
       </div>
@@ -92,46 +114,91 @@ select { padding: 5px 10px; border-radius: 8px; border: 1px solid #ccc; font-siz
   <p class="note">※ 散布図上の点をクリックすると位置を移動できます</p>
 </div>
 
-<!-- ===== k-means ===== -->
+<!-- k-means -->
 <div id="panel-kmeans" class="panel">
+  <div class="data-controls">
+    <span class="data-label">データ：</span>
+    <button class="btn success"   onclick="loadKmTeaching()">教材用</button>
+    <button class="btn secondary" onclick="loadKmRandom()">ランダム</button>
+  </div>
   <div class="controls">
-    <span style="font-size:16px;color:#666;">k =</span>
+    <span style="font-size:15px;color:#666;">k =</span>
     <input type="range" min="2" max="5" value="3" id="k-slider"
       oninput="document.getElementById('k-val').textContent=this.value; resetKmeans();"
       style="width:80px;">
-    <span id="k-val" style="font-size:16px;font-weight:500;min-width:16px;">3</span>
+    <span id="k-val" style="font-size:15px;font-weight:500;min-width:16px;">3</span>
     <button class="btn primary" id="btn-km-step" onclick="stepKmeans()">次のステップ ▶</button>
     <button class="btn" onclick="autoKmeans()">自動再生</button>
     <button class="btn" onclick="resetKmeans()">リセット</button>
     <span class="step-badge" id="km-step-info">ステップ 0</span>
   </div>
   <div id="km-phase-label" class="phase-label phase-measure">手順1：ランダム割り当て前</div>
-  <div id="km-info" class="info-box info-neutral">
-    「次のステップ」で各点にランダムにクラスタを割り当てます（手順1）。
-  </div>
-  <canvas id="kmCanvas" width="680" height="300" onclick="kmClick(event)"></canvas>
+  <div id="km-info" class="info-box info-neutral">「次のステップ」で各点にランダムにクラスタを割り当てます（手順1）。</div>
+  <canvas id="kmCanvas" onclick="kmClick(event)"></canvas>
   <p class="note">※ 散布図上の点をクリックすると位置を移動できます</p>
 </div>
 
 <script>
 const COLORS  = ['#378ADD','#D85A30','#1D9E75','#D4537E','#BA7517','#7F77DD'];
 const LCOLORS = ['#B5D4F4','#F5C4B3','#9FE1CB','#F4C0D1','#FAC775','#CECBF6'];
+
+// 論理サイズ（座標系）
+const HIER_W = 400, HIER_H = 400;
+const KM_W   = 800, KM_H   = 400;
+
 function dist(a,b){ return Math.sqrt((a.x-b.x)**2+(a.y-b.y)**2); }
+
+// DPR対応：canvasの物理解像度を上げ、論理サイズでスケール
+function setupCanvas(id, logicW, logicH){
+  const cv  = document.getElementById(id);
+  const dpr = window.devicePixelRatio || 1;
+  cv.width  = logicW * dpr;
+  cv.height = logicH * dpr;
+  // CSS表示サイズは幅100%・アスペクト比維持（CSSで制御）
+  const ctx = cv.getContext('2d');
+  ctx.setTransform(1,0,0,1,0,0); // リセット
+  ctx.scale(dpr, dpr);
+  return {cv, ctx, w: logicW, h: logicH};
+}
+
+/* =====================================================================
+   データ定義
+   ===================================================================== */
+function hierTeachingPts(){
+  return [
+    {x:80,y:100},{x:120,y:75},{x:100,y:140},
+    {x:260,y:90},{x:300,y:115},{x:280,y:65},
+    {x:180,y:260},{x:210,y:300},{x:155,y:285},
+    {x:360,y:230},{x:335,y:270}
+  ];
+}
+function hierRandomPts(){
+  const pts=[];
+  for(let i=0;i<10;i++) pts.push({x:25+Math.random()*350, y:25+Math.random()*350});
+  return pts;
+}
+function kmTeachingPts(){
+  return [
+    {x:90,y:90},{x:140,y:70},{x:120,y:130},{x:80,y:65},{x:155,y:110},
+    {x:420,y:85},{x:460,y:110},{x:440,y:65},{x:395,y:125},{x:475,y:85},
+    {x:240,y:290},{x:270,y:330},{x:210,y:320},{x:255,y:280},{x:290,y:315},
+    {x:570,y:260},{x:545,y:300},{x:600,y:305},{x:565,y:335},{x:615,y:265}
+  ];
+}
+function kmRandomPts(){
+  const pts=[];
+  for(let i=0;i<10;i++) pts.push({x:30+Math.random()*740, y:30+Math.random()*340});
+  return pts;
+}
 
 /* =====================================================================
    階層的クラスタリング
    ===================================================================== */
 let hPts=[], hClusters=[], hMerges=[], hMergeIdx=0, hPhase='init', hAutoTimer=null;
 
-function initHier(){
-  hPts=[
-  {x:80,y:100},{x:120,y:75},{x:100,y:140},
-  {x:260,y:90},{x:300,y:115},{x:280,y:65},
-  {x:180,y:260},{x:210,y:300},{x:155,y:285},
-  {x:360,y:230},{x:335,y:270}
-];
-resetHier();
-}
+function loadHierTeaching(){ hPts=hierTeachingPts(); resetHier(); }
+function loadHierRandom()  { hPts=hierRandomPts();   resetHier(); }
+function initHier()        { loadHierTeaching(); }
 
 function clusterLabel(cl){ return '{'+cl.map(i=>i+1).join(',')+'}';}
 
@@ -201,12 +268,13 @@ function resetHier(){
   document.getElementById('btn-step').disabled=false;
   setHierPhaseUI('init',0);
   clearDistTable();
-  drawHier(); drawDend(0);
+  drawHier();
+  drawDend(0);
 }
 
 function clearDistTable(){
   document.getElementById('dist-tbody').innerHTML=
-    '<tr><td colspan="3" style="color:#aaa;padding:8px 6px;font-size:11px;">ステップを進めると<br>表示されます</td></tr>';
+    '<tr><td colspan="3" style="color:#aaa;padding:8px 6px;">ステップを進めると表示されます</td></tr>';
 }
 
 function updateDistTable(allDists){
@@ -215,7 +283,7 @@ function updateDistTable(allDists){
   allDists.forEach(({la,lb,d,isMin})=>{
     const tr=document.createElement('tr');
     if(isMin) tr.className='min-row';
-    tr.innerHTML=`<td>${la}</td><td>${lb}</td><td>${d.toFixed(1)}</td>`;
+    tr.innerHTML=`<td title="${la}">${la}</td><td title="${lb}">${lb}</td><td>${d.toFixed(1)}</td>`;
     tbody.appendChild(tr);
   });
 }
@@ -265,7 +333,8 @@ function stepHier(){
     hClusters.push(merged);
     hMergeIdx++;
     hPhase='merged';
-    drawHier(); drawDend(hMergeIdx);
+    drawHier();
+    drawDend(hMergeIdx);
     setHierPhaseUI('merged',hMergeIdx);
     if(hMergeIdx>=hMerges.length) setTimeout(()=>{hPhase='done';setHierPhaseUI('done',hMergeIdx);clearInterval(hAutoTimer);},0);
   }
@@ -277,12 +346,12 @@ function autoHier(){
 }
 
 function drawHierWithDistances(m){
-  const cv=document.getElementById('hierCanvas'),ctx=cv.getContext('2d');
-  ctx.clearRect(0,0,cv.width,cv.height);
+  const {cv,ctx}=setupCanvas('hierCanvas',HIER_W,HIER_H);
   const method=document.getElementById('linkage-method').value;
   hClusters.forEach((cl,ci)=>{
     if(cl.length>1){
-      ctx.beginPath();cl.map(i=>hPts[i]).forEach((p,pi)=>pi===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y));
+      ctx.beginPath();
+      cl.map(i=>hPts[i]).forEach((p,pi)=>pi===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y));
       ctx.closePath();ctx.fillStyle=LCOLORS[ci%LCOLORS.length]+'44';ctx.fill();
     }
   });
@@ -292,12 +361,12 @@ function drawHierWithDistances(m){
     if(isMin){
       ctx.save();ctx.strokeStyle='#E24B4A';ctx.lineWidth=2.5;ctx.setLineDash([]);
       ctx.beginPath();ctx.moveTo(ax,ay);ctx.lineTo(bx,by);ctx.stroke();
-      ctx.fillStyle='#E24B4A';ctx.font='bold 11px sans-serif';ctx.textAlign='center';
+      ctx.fillStyle='#E24B4A';ctx.font='bold 13px sans-serif';ctx.textAlign='center';
       ctx.fillText(d.toFixed(1),mx,my-6);ctx.restore();
     } else {
       ctx.save();ctx.strokeStyle='#bbb';ctx.lineWidth=1;ctx.setLineDash([4,3]);
       ctx.beginPath();ctx.moveTo(ax,ay);ctx.lineTo(bx,by);ctx.stroke();
-      ctx.fillStyle='#bbb';ctx.font='10px sans-serif';ctx.textAlign='center';
+      ctx.fillStyle='#bbb';ctx.font='11px sans-serif';ctx.textAlign='center';
       ctx.fillText(d.toFixed(1),mx,my-5);ctx.restore();
     }
   });
@@ -306,11 +375,11 @@ function drawHierWithDistances(m){
 }
 
 function drawHier(){
-  const cv=document.getElementById('hierCanvas'),ctx=cv.getContext('2d');
-  ctx.clearRect(0,0,cv.width,cv.height);
+  const {cv,ctx}=setupCanvas('hierCanvas',HIER_W,HIER_H);
   hClusters.forEach((cl,ci)=>{
     if(cl.length>1){
-      ctx.beginPath();cl.map(i=>hPts[i]).forEach((p,pi)=>pi===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y));
+      ctx.beginPath();
+      cl.map(i=>hPts[i]).forEach((p,pi)=>pi===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y));
       ctx.closePath();ctx.fillStyle=LCOLORS[ci%LCOLORS.length]+'55';ctx.fill();
     }
   });
@@ -325,25 +394,24 @@ function drawHPoints(ctx){
       const p=hPts[i];
       ctx.beginPath();ctx.arc(p.x,p.y,7,0,Math.PI*2);
       if(merged){
-        // 結合済み：白抜き（塗りなし・枠線のみ）
         ctx.fillStyle='#fff';ctx.fill();
         ctx.strokeStyle=color;ctx.lineWidth=2.5;ctx.stroke();
       } else {
-        // 単独：塗りつぶし
         ctx.fillStyle=color;ctx.fill();
         ctx.strokeStyle='#fff';ctx.lineWidth=1.5;ctx.stroke();
       }
-      ctx.fillStyle='#555';ctx.font='10px sans-serif';ctx.textAlign='left';
-      ctx.fillText(i+1,p.x+8,p.y+4);
+      const lx=p.x>370?p.x-10:p.x+10;
+      ctx.textAlign=p.x>370?'right':'left';
+      ctx.fillStyle='#555';ctx.font='13px sans-serif';
+      ctx.fillText(i+1,lx,p.y+4);
     });
   });
 }
 
 function drawDend(upTo){
-  const cv=document.getElementById('dendCanvas'),ctx=cv.getContext('2d');
-  ctx.clearRect(0,0,cv.width,cv.height);
-  const n=hPts.length,pL=28,pR=16,pT=16,pB=28;
-  const W=cv.width-pL-pR,H=cv.height-pT-pB;
+  const {cv,ctx,w,h}=setupCanvas('dendCanvas',HIER_W,HIER_H);
+  const n=hPts.length,pL=30,pR=20,pT=20,pB=35;
+  const W=w-pL-pR, H=h-pT-pB;
   const nX={};
   hPts.forEach((_,i)=>{nX[`l${i}`]=(i+0.5)*(W/n);});
   const maxD=hMerges.length>0?Math.max(...hMerges.map(m=>m.d))*1.1:1;
@@ -351,8 +419,8 @@ function drawDend(upTo){
     const x=pL+nX[`l${i}`],y=pT+H;
     ctx.strokeStyle='#ccc';ctx.lineWidth=0.5;
     ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x,y+5);ctx.stroke();
-    ctx.fillStyle='#888';ctx.font='10px sans-serif';ctx.textAlign='center';
-    ctx.fillText(i+1,x,y+15);
+    ctx.fillStyle='#888';ctx.font='13px sans-serif';ctx.textAlign='center';
+    ctx.fillText(i+1,x,y+18);
   });
   let cls=hPts.map((_,i)=>[i]);
   const keys=hPts.map((_,i)=>`l${i}`);
@@ -369,32 +437,26 @@ function drawDend(upTo){
 }
 
 function hierClick(e){
-  const cv=document.getElementById('hierCanvas'),r=cv.getBoundingClientRect();
-  const mx=(e.clientX-r.left)*(cv.width/r.width),my=(e.clientY-r.top)*(cv.height/r.height);
+  const cv=document.getElementById('hierCanvas');
+  const r=cv.getBoundingClientRect();
+  const scaleX=HIER_W/r.width, scaleY=HIER_H/r.height;
+  const mx=(e.clientX-r.left)*scaleX, my=(e.clientY-r.top)*scaleY;
   let ni=-1,nd=Infinity;
   hPts.forEach((p,i)=>{const d=dist(p,{x:mx,y:my});if(d<nd){nd=d;ni=i;}});
-  if(nd<20){hPts[ni]={x:Math.max(15,Math.min(275,mx)),y:Math.max(15,Math.min(265,my))};resetHier();}
+  if(nd<20){
+    hPts[ni]={x:Math.max(15,Math.min(385,mx)),y:Math.max(15,Math.min(385,my))};
+    resetHier();
+  }
 }
 
 /* =====================================================================
    k-means
-   資料の手順に完全に対応：
-     手順1：各点にランダムにクラスタを割り当てる
-     手順2：クラスタの重心を計算する（× 印で表示）
-     手順3：各点を最近の重心のクラスタに再割り当て
-     手順4：変化がなければ終了、あれば手順2へ
    ===================================================================== */
 let kmPts=[], kmAssign=[], kmCentroids=[], kmStep=0, kmPhase='init', kmAutoT=null;
 
-function initKmeans(){
-  kmPts=[
-  {x:90,y:90},{x:140,y:70},{x:120,y:130},{x:80,y:65},{x:155,y:110},
-  {x:290,y:85},{x:330,y:110},{x:310,y:65},{x:265,y:125},{x:350,y:85},
-  {x:195,y:250},{x:225,y:290},{x:165,y:275},{x:210,y:240},{x:245,y:275},
-  {x:380,y:225},{x:355,y:258},{x:410,y:265},{x:375,y:295},{x:425,y:230}
-];
-  resetKmeans();
-}
+function loadKmTeaching(){ kmPts=kmTeachingPts(); resetKmeans(); }
+function loadKmRandom()  { kmPts=kmRandomPts();   resetKmeans(); }
+function initKmeans()    { loadKmTeaching(); }
 
 function resetKmeans(){
   clearInterval(kmAutoT);
@@ -449,20 +511,15 @@ function setKmPhaseUI(phase,changed){
 function stepKmeans(){
   const k=parseInt(document.getElementById('k-slider').value);
   if(kmPhase==='init'){
-    // 手順1：各点にランダムにクラスタを割り当てる
     kmAssign=kmPts.map(()=>Math.floor(Math.random()*k));
     kmCentroids=[];
     kmStep++; kmPhase='assigned';
-    setKmPhaseUI('assigned');
-    drawKm();
+    setKmPhaseUI('assigned'); drawKm();
   } else if(kmPhase==='assigned'){
-    // 手順2：重心を計算
     kmCentroids=calcCentroids();
     kmStep++; kmPhase='centroid';
-    setKmPhaseUI('centroid');
-    drawKm();
+    setKmPhaseUI('centroid'); drawKm();
   } else if(kmPhase==='centroid'){
-    // 手順3：再割り当て
     const prev=[...kmAssign];
     kmPts.forEach((p,i)=>{
       let best=0,bd=Infinity;
@@ -475,14 +532,11 @@ function stepKmeans(){
     });
     const changed=prev.some((a,i)=>a!==kmAssign[i]);
     kmStep++; kmPhase=changed?'reassigned_changed':'reassigned_done';
-    setKmPhaseUI('reassigned',changed);
-    drawKm();
+    setKmPhaseUI('reassigned',changed); drawKm();
   } else if(kmPhase==='reassigned_changed'){
-    // 手順4：変化あり → 手順2へ（重心再計算）
     kmCentroids=calcCentroids();
     kmStep++; kmPhase='centroid';
-    setKmPhaseUI('centroid');
-    drawKm();
+    setKmPhaseUI('centroid'); drawKm();
   }
 }
 
@@ -495,9 +549,7 @@ function autoKmeans(){
 }
 
 function drawKm(){
-  const cv=document.getElementById('kmCanvas'),ctx=cv.getContext('2d');
-  ctx.clearRect(0,0,cv.width,cv.height);
-  // 接続線（割り当て済みかつ重心あり）
+  const {cv,ctx}=setupCanvas('kmCanvas',KM_W,KM_H);
   if(kmCentroids.length>0){
     kmPts.forEach((p,i)=>{
       const ci=kmAssign[i];
@@ -506,29 +558,32 @@ function drawKm(){
       ctx.strokeStyle=LCOLORS[ci%LCOLORS.length];ctx.lineWidth=0.8;ctx.stroke();
     });
   }
-  // 点
   kmPts.forEach((p,i)=>{
     const ci=kmAssign[i];
     const color=(ci>=0)?COLORS[ci%COLORS.length]:'#ccc';
-    ctx.beginPath();ctx.arc(p.x,p.y,6,0,Math.PI*2);
+    ctx.beginPath();ctx.arc(p.x,p.y,7,0,Math.PI*2);
     ctx.fillStyle=color;ctx.fill();
     ctx.strokeStyle='#fff';ctx.lineWidth=1.5;ctx.stroke();
   });
-  // 重心（×印）
   kmCentroids.forEach((c,ci)=>{
     if(!c) return;
-    ctx.strokeStyle=COLORS[ci%COLORS.length];ctx.lineWidth=2.5;
-    ctx.beginPath();ctx.moveTo(c.x-9,c.y-9);ctx.lineTo(c.x+9,c.y+9);ctx.stroke();
-    ctx.beginPath();ctx.moveTo(c.x+9,c.y-9);ctx.lineTo(c.x-9,c.y+9);ctx.stroke();
+    ctx.strokeStyle=COLORS[ci%COLORS.length];ctx.lineWidth=3;
+    ctx.beginPath();ctx.moveTo(c.x-10,c.y-10);ctx.lineTo(c.x+10,c.y+10);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(c.x+10,c.y-10);ctx.lineTo(c.x-10,c.y+10);ctx.stroke();
   });
 }
 
 function kmClick(e){
-  const cv=document.getElementById('kmCanvas'),r=cv.getBoundingClientRect();
-  const mx=(e.clientX-r.left)*(cv.width/r.width),my=(e.clientY-r.top)*(cv.height/r.height);
+  const cv=document.getElementById('kmCanvas');
+  const r=cv.getBoundingClientRect();
+  const scaleX=KM_W/r.width, scaleY=KM_H/r.height;
+  const mx=(e.clientX-r.left)*scaleX, my=(e.clientY-r.top)*scaleY;
   let ni=-1,nd=Infinity;
   kmPts.forEach((p,i)=>{const d=dist(p,{x:mx,y:my});if(d<nd){nd=d;ni=i;}});
-  if(nd<20){kmPts[ni]={x:Math.max(10,Math.min(670,mx)),y:Math.max(10,Math.min(290,my))};resetKmeans();}
+  if(nd<20){
+    kmPts[ni]={x:Math.max(10,Math.min(790,mx)),y:Math.max(10,Math.min(390,my))};
+    resetKmeans();
+  }
 }
 
 function switchTab(name,el){
