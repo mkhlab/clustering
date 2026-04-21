@@ -7,7 +7,6 @@
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: sans-serif; color: #222; background: #fff; padding: 1rem; font-size: 16px; max-width: 1000px; margin: 0 auto; }
-
 .tabs { display: flex; gap: 6px; padding: 0 0 0.75rem; flex-wrap: wrap; }
 .tab { padding: 6px 14px; border-radius: 8px; border: 1px solid #ccc; font-size: 16px; cursor: pointer; background: transparent; color: #555; }
 .tab.active { background: #f0f0f0; color: #111; font-weight: 500; border-color: #999; }
@@ -409,30 +408,45 @@ function drawHPoints(ctx){
 }
 
 function drawDend(upTo){
-  const {cv,ctx,w,h}=setupCanvas('dendCanvas',HIER_W,HIER_H);
+  const {ctx,w,h}=setupCanvas('dendCanvas',HIER_W,HIER_H);
   const n=hPts.length,pL=30,pR=20,pT=20,pB=35;
   const W=w-pL-pR, H=h-pT-pB;
-  const nX={};
-  hPts.forEach((_,i)=>{nX[`l${i}`]=(i+0.5)*(W/n);});
   const maxD=hMerges.length>0?Math.max(...hMerges.map(m=>m.d))*1.1:1;
+
+  // 各点のx座標（固定）
+  const ptX=hPts.map((_,i)=>pL+(i+0.5)*(W/n));
+
+  // クラスタ（点インデックスの配列）のx中心を返す
+  function clX(ca){ return ca.reduce((s,i)=>s+ptX[i],0)/ca.length; }
+
+  // ラベル
   hPts.forEach((_,i)=>{
-    const x=pL+nX[`l${i}`],y=pT+H;
-    ctx.strokeStyle='#ccc';ctx.lineWidth=0.5;
-    ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x,y+5);ctx.stroke();
-    ctx.fillStyle='#888';ctx.font='13px sans-serif';ctx.textAlign='center';
-    ctx.fillText(i+1,x,y+18);
+    ctx.fillStyle='#888'; ctx.font='13px sans-serif'; ctx.textAlign='center';
+    ctx.fillText(i+1, ptX[i], pT+H+18);
   });
-  let cls=hPts.map((_,i)=>[i]);
-  const keys=hPts.map((_,i)=>`l${i}`);
+
+  // 各点が「最初に結合されたステップのy」を記録
+  const ptMergedY=new Array(n).fill(pT+H); // 初期値は底
+
   for(let s=0;s<Math.min(upTo,hMerges.length);s++){
-    const{mi,mj,d}=hMerges[s];
-    const xi=pL+nX[keys[mi]],xj=pL+nX[keys[mj]];
-    const y=pT+H*(1-d/maxD);
-    ctx.strokeStyle=COLORS[s%COLORS.length];ctx.lineWidth=1.5;
-    ctx.beginPath();ctx.moveTo(xi,pT+H);ctx.lineTo(xi,y);ctx.lineTo(xj,y);ctx.lineTo(xj,pT+H);ctx.stroke();
-    const nk=`m${s}`;nX[nk]=((xi+xj)/2)-pL;
-    cls=cls.filter((_,k)=>k!==mi&&k!==mj);cls.push([]);
-    keys.splice(mi,1);keys.splice(mi<=mj?mj-1:mj,1);keys.push(nk);
+    const m=hMerges[s];
+    const ca=m.allDists.find(d=>d.isMin).ca;
+    const cb=m.allDists.find(d=>d.isMin).cb;
+    const y=pT+H*(1-m.d/maxD);
+    const xi=clX(ca), xj=clX(cb);
+
+    ctx.strokeStyle=COLORS[s%COLORS.length]; ctx.lineWidth=1.5;
+
+    // ca側の縦線：ca内の各点の現在topYからyまで
+    const topYi=Math.min(...ca.map(i=>ptMergedY[i]));
+    const topYj=Math.min(...cb.map(i=>ptMergedY[i]));
+
+    ctx.beginPath(); ctx.moveTo(xi,topYi); ctx.lineTo(xi,y); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(xj,topYj); ctx.lineTo(xj,y); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(xi,y);     ctx.lineTo(xj,y); ctx.stroke();
+
+    // このステップで結合された全点のtopYを更新
+    [...ca,...cb].forEach(i=>{ ptMergedY[i]=y; });
   }
 }
 
